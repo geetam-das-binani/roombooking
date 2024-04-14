@@ -2,7 +2,7 @@ import { catchAsyncErrors } from "../utils/catchAsyncErrors.mjs";
 import { v2 as cloudinary } from "cloudinary";
 import RoomModel from "../models/room.model.mjs";
 import { ErrorHandler } from "../utils/error.mjs";
-
+import BookingModel from "../models/booking.model.mjs";
 export const getAllRooms = catchAsyncErrors(async (req, res, next) => {
   const rooms = await RoomModel.find({}).sort({ createdAt: -1 });
   if (!rooms.length) {
@@ -74,5 +74,73 @@ export const createRoomHandler = catchAsyncErrors(async (req, res, next) => {
   res.status(201).json({
     success: true,
     message: "Room created successfully",
+  });
+});
+
+export const updateRoom = catchAsyncErrors(async (req, res, next) => {
+  const {
+    capacity,
+    description,
+    date,
+    startTime,
+    endTime,
+    price,
+    isBooked,
+    roomId,
+    existingImage,
+  } = req.body;
+  if (!roomId) {
+    return next(new ErrorHandler("roomId is required", 400));
+  }
+
+  const photo = req.file;
+  let cloudinaryRes = "";
+  if (photo) {
+    const b64 = Buffer.from(photo.buffer).toString("base64");
+    let dataURI = `data:${photo.mimetype};base64,${b64}`;
+    let res = await cloudinary.uploader.upload(dataURI);
+    cloudinaryRes = res.secure_url;
+  }
+
+  const updatedObject = {
+    capacity,
+    description,
+    availability: [
+      {
+        date: new Date(date),
+        startTime,
+        endTime,
+        isBooked,
+      },
+    ],
+    price,
+    roomImage: cloudinaryRes || existingImage,
+  };
+  await RoomModel.findByIdAndUpdate(roomId, {
+    $set: updatedObject,
+  });
+  const existingBookingsWithRoomId = await BookingModel.countDocuments({
+    roomId,
+  });
+  if (!existingBookingsWithRoomId)
+    return res.status(200).json({
+      success: true,
+      message: "Room updated successfully",
+    });
+
+  await BookingModel.updateMany(
+    { roomId },
+    {
+      $set: {
+        startTime,
+        endTime,
+        date: new Date(date),
+      },
+    }
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: "Room updated successfully",
   });
 });

@@ -1,6 +1,6 @@
 import express from "express";
 import {verifyToken,authorizeRoles} from '../middlewares/auth.middleware.mjs'
-import { createRoomHandler ,getAllRooms,getSingleRoom,getAllAvailableRooms} from "../controllers/room.controllers.mjs";
+import { createRoomHandler ,getAllRooms,getSingleRoom,getAllAvailableRooms,updateRoom} from "../controllers/room.controllers.mjs";
 import {upload} from '../multer/multer.mjs'
 const router = express.Router();
 
@@ -11,4 +11,5 @@ router.post("/create-room",verifyToken,authorizeRoles
 ,upload.single("roomImage"),createRoomHandler)
 router.get("/all-rooms",verifyToken, authorizeRoles, getAllRooms)
 router.get("/available-rooms",verifyToken, authorizeRoles, getAllAvailableRooms)
+router.post("/update-room",verifyToken, authorizeRoles,upload.single("roomImage"), updateRoom)
 export { router  }

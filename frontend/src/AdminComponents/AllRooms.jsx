@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import * as apiClient from "../apiCilet";
-
+import { Button } from "@chakra-ui/react";
 const AllRooms = () => {
+  const navigate = useNavigate();
   const { data } = useQuery({
     queryKey: ["rooms"],
     queryFn: apiClient.getAllRooms,
@@ -65,6 +67,20 @@ const AllRooms = () => {
                   </p>
                 </div>
               ))}
+            </div>
+            <div className="flex justify-end">
+              <Button
+                onClick={() =>
+                  navigate(`/update`, {
+                    state: {
+                      room,
+                    },
+                  })
+                }
+                colorScheme="blue"
+              >
+                Want To update ?
+              </Button>
             </div>
           </div>
         </div>

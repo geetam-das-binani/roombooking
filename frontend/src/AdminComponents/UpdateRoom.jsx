@@ -1,24 +1,38 @@
-import { Button, Input } from "@chakra-ui/react";
-import { FaImage } from "react-icons/fa";
-import { Icon } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
-import * as apiClient from "../apiCilet";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import * as apiClient from "../apiCilet";
+import { Button, Icon, Input } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
+import { FaImage } from "react-icons/fa";
 const minDate = new Date().toISOString().split("T")[0];
-//  * add another date,startTime,end time so that admin can at max 2 abailability
-const AddRoom = () => {
+const UpdateRoom = () => {
+  const location = useLocation();
+  const transformedDate = new Date(location?.state?.room?.availability[0]?.date)
+    .toISOString()
+    .split("T")[0];
   const [file, setFile] = useState(null);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [date, setDate] = useState("");
-  const [price, setPrice] = useState("");
-  const [capacity, setCapacity] = useState("");
-  const [description, setDescription] = useState("");
+  const [imagePreview, setImagePreview] = useState(
+    location?.state?.room?.roomImage || ""
+  );
+  const [startTime, setStartTime] = useState(
+    location?.state?.room?.availability[0]?.startTime || ""
+  );
+  const [endTime, setEndTime] = useState(
+    location?.state?.room?.availability[0]?.endTime || ""
+  );
+  const [date, setDate] = useState(transformedDate || "");
+  const [price, setPrice] = useState(location?.state?.room?.price || "");
+  const [capacity, setCapacity] = useState(
+    location?.state?.room?.capacity || ""
+  );
+  const [description, setDescription] = useState(
+    location?.state?.room?.description || ""
+  );
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
-    mutationFn: apiClient.addRoomAdmin,
+    mutationFn: apiClient.updateRoomAdmin,
     onSuccess: (data) => {
       toast.success(data.message);
       navigate("/dashboard/rooms");
@@ -30,32 +44,51 @@ const AddRoom = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    if (!file) {
+    if (!imagePreview) {
       toast.error("Please select an image");
       return;
     }
     formData.append("roomImage", file);
+    formData.append("existingImage", imagePreview);
     formData.append("startTime", startTime);
     formData.append("endTime", endTime);
     formData.append("date", date);
     formData.append("price", price);
     formData.append("capacity", capacity);
     formData.append("description", description);
+    formData.append(
+      "isBooked",
+      location?.state?.room?.availability[0].isBooked
+    );
+    const roomId = location?.state?.room?._id;
+    formData.append("roomId", roomId);
     mutate(formData);
   };
 
+  const handleFileChange = (e) => {
+    const inputFile = e.target.files?.[0];
+    if (inputFile) {
+      setFile(inputFile);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(inputFile);
+    }
+  };
   return (
     <div>
-      <h1 className="text-3xl text-center font-bold">Add room</h1>
+      <h1 className="text-3xl text-center font-bold">Update Room</h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-3 p-4 border border-slate-300 rounded-lg mx-auto w-1/2"
+        className="flex flex-col gap-3 p-4 border
+           border-slate-300 rounded-lg mx-auto w-1/2"
       >
         <div>
           <label className="font-semibold">
             Price Per Room:
             <Input
-            ml={2}
+              ml={2}
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
@@ -69,7 +102,7 @@ const AddRoom = () => {
           <label className="font-semibold">
             Capacity:
             <Input
-            ml={2}
+              ml={2}
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
               required
@@ -129,13 +162,22 @@ const AddRoom = () => {
             />
           </label>
         </div>
+        {imagePreview && (
+          <div>
+            <label className="font-semibold">
+              Preview :{" "}
+              <CloseIcon ml={2} onClick={() => setImagePreview(null)} />
+              <img src={imagePreview} alt={description} />
+            </label>
+          </div>
+        )}
+
         <div>
           <label className="font-semibold">
             Choose an Image: <Icon as={FaImage} />
             <Input
               accept="image/*"
-              onChange={(e) => setFile(e.target.files[0])}
-              required
+              onChange={handleFileChange}
               type="file"
               hidden
             />
@@ -149,4 +191,4 @@ const AddRoom = () => {
   );
 };
 
-export default AddRoom;
+export default UpdateRoom;

@@ -75,14 +75,13 @@ export const getSingleRoomDetailsById = async (roomId) => {
 };
 
 export const makeBooking = async (formData) => {
- 
   const response = await fetch(`${API_BASE_URL}/api/v1/create-booking`, {
     credentials: "include",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body:JSON.stringify(formData),
+    body: JSON.stringify(formData),
   });
 
   const data = await response.json();
@@ -92,7 +91,7 @@ export const makeBooking = async (formData) => {
   return data;
 };
 
-export const getMyBookings=async()=>{
+export const getMyBookings = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/my-bookings`, {
     credentials: "include",
   });
@@ -101,7 +100,7 @@ export const getMyBookings=async()=>{
     throw new Error(data.message);
   }
   return data;
-}
+};
 
 export const getAllUsers = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/allUsers`, {
@@ -116,7 +115,7 @@ export const getAllUsers = async () => {
   return data;
 };
 
-export const getAllRoomsAdmin= async () => {
+export const getAllRoomsAdmin = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/all-rooms`, {
     credentials: "include",
   });
@@ -129,7 +128,7 @@ export const getAllRoomsAdmin= async () => {
   return data;
 };
 
-export const getAllBookingsAdmin= async () => {
+export const getAllBookingsAdmin = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/all-bookings`, {
     credentials: "include",
   });
@@ -140,8 +139,8 @@ export const getAllBookingsAdmin= async () => {
     throw new Error(data.message);
   }
   return data;
-}
-export const getAllAvailableRoomsAdmin= async () => {
+};
+export const getAllAvailableRoomsAdmin = async () => {
   const response = await fetch(`${API_BASE_URL}/api/v1/available-rooms`, {
     credentials: "include",
   });
@@ -152,14 +151,13 @@ export const getAllAvailableRoomsAdmin= async () => {
     throw new Error(data.message);
   }
   return data;
-}
+};
 
-
-export const addRoomAdmin= async (formdata) => {
+export const addRoomAdmin = async (formdata) => {
   const response = await fetch(`${API_BASE_URL}/api/v1/create-room`, {
     credentials: "include",
-    body:formdata,
-    method:"POST"
+    body: formdata,
+    method: "POST",
   });
 
   const data = await response.json();
@@ -168,12 +166,11 @@ export const addRoomAdmin= async (formdata) => {
     throw new Error(data.message);
   }
   return data;
-}
+};
 
-export const getDasboardStats= async (formdata) => {
+export const getDasboardStats = async (formdata) => {
   const response = await fetch(`${API_BASE_URL}/api/v1/stats`, {
     credentials: "include",
-    
   });
 
   const data = await response.json();
@@ -182,4 +179,19 @@ export const getDasboardStats= async (formdata) => {
     throw new Error(data.message);
   }
   return data;
-}
+};
+
+export const updateRoomAdmin = async (formData) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/update-room`, {
+    credentials: "include",
+    body: formData,
+    method: "POST",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+};
