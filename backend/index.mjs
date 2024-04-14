@@ -7,21 +7,22 @@ import { router as userRoutes } from "./routes/user.routes.mjs";
 import { router as roomRoutes } from "./routes/room.route.mjs";
 import { router as bookingRoutes } from "./routes/booking.route.mjs";
 import { router as statsRoute } from "./routes//dashboardstats.routes.mjs";
-import cors from 'cors'
+import cors from "cors";
+import path from "path";
 import { connectToDB } from "./db/db.mjs";
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 7001;
-app.use(cors({
-  origin:true,
-  credentials:true
-}))
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -32,6 +33,15 @@ app.use("/api/v1", userRoutes);
 app.use("/api/v1", roomRoutes);
 app.use("/api/v1", bookingRoutes);
 app.use("/api/v1", statsRoute);
+
+// /-----------------------Deployment------------------------
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, ".././frontend/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, ".././frontend", "dist", "index.html"));
+});
+
+// <-------------------- ------------------
 
 app.use(errorMiddleware);
 
