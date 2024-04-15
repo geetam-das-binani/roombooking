@@ -36,13 +36,16 @@ cd backend && npm install
 Set up environment variables:
 
 - Create a `.env` file in the `backend` directory.
-- Add the following variables:
+- Create a `.env` file in the `frontend` directory.
+- Add the following variables to the backend env file:
 - PORT
 - MONGODB_URL
 - JWT_SECRET
 - CLOUD_NAME
 - CLOUDINARY_API_KEY
 -CLOUDINARY_API_SECRET
+- Add the following variable to the frontend env file:
+- VITE_API_BASE_URL - [http://localhost:7000(backend url)] feel free to change port
 
 ## Usage
 
