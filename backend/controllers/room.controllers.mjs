@@ -33,7 +33,7 @@ export const getSingleRoom = catchAsyncErrors(async (req, res, next) => {
 export const getAllAvailableRooms = catchAsyncErrors(async (req, res, next) => {
   const allRooms = await RoomModel.find({
     availability: { $elemMatch: { isBooked: false } },
-  });
+  }).sort({ createdAt: -1 });
   const transformedRooms = allRooms.map((room) => {
     return {
       ...room.toObject(),
@@ -89,6 +89,9 @@ export const updateRoom = catchAsyncErrors(async (req, res, next) => {
   if (!roomId) {
     return next(new ErrorHandler("roomId is required", 400));
   }
+  if (parseInt(capacity) > 2 || parseInt(capacity) < 1) {
+    return next(new ErrorHandler("Room capacity is min 1 and max 2", 400));
+  }
 
   const photo = req.file;
   let cloudinaryRes = "";
@@ -105,9 +108,19 @@ export const updateRoom = catchAsyncErrors(async (req, res, next) => {
     price,
     roomImage: cloudinaryRes || existingImage,
   };
-  await RoomModel.findByIdAndUpdate(roomId, {
-    $set: updatedObject,
+  const room = await RoomModel.findById(roomId);
+  await RoomModel.findByIdAndUpdate(roomId, { $set: updatedObject });
+
+  const existingBookingsWithRoomId = await BookingModel.find({
+    roomId,
   });
+  if (existingBookingsWithRoomId.length) {
+    for (let i = 0; i < existingBookingsWithRoomId.length; i++) {
+      const element = existingBookingsWithRoomId[i];
+      element.totalPrice = (element.totalPrice / room.price) * parseInt(price);
+      await element.save();
+    }
+  }
 
   return res.status(200).json({
     success: true,

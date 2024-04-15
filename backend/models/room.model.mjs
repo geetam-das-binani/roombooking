@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
-function generateRoomNumber() {
-  return Math.floor(Math.random() * 10000) + 1; // Change the range as needed
-}
+
 
 
 const roomSchema = new mongoose.Schema({
   roomNumber: {
     type: Number,
-    default: generateRoomNumber(),
+    
     unique: true,
   },
   capacity: {
     type: Number,
     required: true,
+    
   },
   description: {
     type: String,
@@ -48,6 +47,17 @@ const roomSchema = new mongoose.Schema({
   ],
 },{timestamps:true});
 
+roomSchema.pre('save', async function (next) {
+  if (!this.roomNumber) {
+    
+    let roomNumber;
+    do {
+      roomNumber = Math.floor(Math.random() * 10000) + 1000;
+    } while (await mongoose.model('rooms').findOne({ roomNumber }));
+    this.roomNumber = roomNumber;
+  }
+  next();
+});
 export default mongoose.model('rooms', roomSchema);
 
 

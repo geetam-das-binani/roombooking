@@ -24,6 +24,15 @@ const DashBoardAvailableRooms = () => {
     return <div>Something Went Wrong</div>;
   }
 
+  const truncate = (description) => {
+    return description
+      ? description.length > 7
+        ? description.slice(0,10) + "..."
+        : description
+      : "N/A  ";
+  };
+  
+
   return (
     <Fragment>
       <TableContainer>
@@ -48,7 +57,7 @@ const DashBoardAvailableRooms = () => {
               >
                 <Td className="w-3">{room?._id}</Td>
                 <Td className="w-3">{room?.capacity}</Td>
-                <Td className="w-3">{room?.description}</Td>
+                <Td className="w-3">{truncate(room?.description)}</Td>
                 <Td className="w-3">
                   {room?.createdAt
                     ? new Date(room?.createdAt).toDateString()

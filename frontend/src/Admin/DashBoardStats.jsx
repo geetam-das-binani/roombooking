@@ -20,7 +20,7 @@ const DashBoardStats = () => {
   return (
     <div className="p-3">
       <h2 className="text-2xl mb-2 text-center font-semibold  ">Statistics</h2>
-      {/* widgets with icon */}
+
       <div
         className="grid
       w-[70%]
@@ -120,10 +120,12 @@ const DashBoardStats = () => {
           </Link>
         </div>
       </div>
+      <div className="bg-blue-200 w-fit md:w-[50%] mx-auto p-2 text-center  rounded-md m-4 font-semibold text-black duration-300 hover:bg-blue-300">
+        Total Amount Earned: ₹{" "}
+        {data?.bookings?.reduce((acc, booking) => acc + booking.totalPrice, 0)}
+      </div>
     </div>
   );
 };
 
 export default Dashboard(DashBoardStats);
-
-// change the arrow icons up and down on all 4 cards based on length logic

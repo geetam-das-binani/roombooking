@@ -7,7 +7,8 @@ import * as apiClient from "../apiCilet";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 const minDate = new Date().toISOString().split("T")[0];
-//  *  add chakra skeleton loader in all pages 
+//  *  add chakra skeleton loader in all pages  and add more room and test as well
+// **and make logic to handle price change when room is updated and in bookings as well 
 const AddRoom = () => {
   const [file, setFile] = useState(null);
   const [startTime, setStartTime] = useState("");

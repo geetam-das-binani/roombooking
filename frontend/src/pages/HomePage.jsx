@@ -2,14 +2,27 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import * as apiClient from "../apiCilet";
 import LatestRoomCard from "../components/LatestRoomCard";
-
+import { Skeleton, Stack } from "@chakra-ui/react";
 const HomePage = () => {
   const { data } = useQuery({
     queryKey: ["rooms"],
     queryFn: apiClient.getAllRooms,
   });
 
-  if (!data || !data?.rooms?.length) return <h1>Loading...</h1>;
+  if (!data || !data?.rooms?.length)
+    return (
+      <Stack>
+        <Stack flexDir={"row"} >
+          <Skeleton height="300px" width="100%"  />
+          <Skeleton height="300px" width="100%" />
+        </Stack>
+        <Stack flexDir={"row"} >
+          <Skeleton height="300px" width="100%"  />
+          <Skeleton height="300px" width="100%" />
+          <Skeleton height="300px" width="100%" />
+        </Stack>
+      </Stack>
+    );
 
   const topRowRooms = data?.rooms?.slice(0, 2) || [];
   const bottomRowRooms = data?.rooms?.slice(2) || [];
@@ -24,8 +37,7 @@ const HomePage = () => {
             ))}
           </div>
           <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-
-          {bottomRowRooms?.map((room) => (
+            {bottomRowRooms?.map((room) => (
               <LatestRoomCard key={room._id} room={room} />
             ))}
           </div>

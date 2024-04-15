@@ -84,6 +84,18 @@ const AllBookings = () => {
                    booking?.endTime}</span>
                 </div>
               </div>
+              <div>
+                <div className="text-xl font-bold">
+                  Booked By :
+                  
+                    {" "}
+                    <span className="text-gray-400">
+
+                    {booking?.user?.name}
+                    </span>
+                 
+                </div>
+              </div>
             </div>
           </div>
         );

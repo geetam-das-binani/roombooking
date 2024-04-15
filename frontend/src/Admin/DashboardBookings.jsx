@@ -24,6 +24,13 @@ const DashboardBookings = () => {
     return <div>Something Went Wrong</div>;
   }
 
+  const truncate = (name) => {
+    return name
+      ? name.length > 7
+        ? name.slice(0,8) + "..."
+        : name
+      : "N/A  ";
+  };
   return (
     <Fragment>
       <TableContainer>
@@ -57,7 +64,7 @@ const DashboardBookings = () => {
                     : "N/A"}
                 </Td>
 
-                <Td>{booking?.user?.name}</Td>
+                <Td>{truncate(booking?.user?.name)}</Td>
 
                 <Td className="w-1">
                   {booking?.totalPrice / booking?.roomId?.price}
