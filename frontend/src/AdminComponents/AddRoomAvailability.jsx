@@ -5,6 +5,8 @@ import * as apiClient from '../apiCilet'
 import toast from 'react-hot-toast'
 import {ArrowBackIcon} from '@chakra-ui/icons'
 import {useLocation, useNavigate, useParams} from 'react-router-dom'
+
+
 const minDate=new Date().toISOString().split('T')[0]
 const AddRoomAvailability = () => {
     const {id}=useParams()

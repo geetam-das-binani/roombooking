@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import * as apiClient from "../apiCilet";
 import toast from 'react-hot-toast';
 import { loggedInUser } from "../reducers/userSlice";
+import {Button} from '@chakra-ui/react'
 const Register = () => {
   const {
     register,
@@ -135,15 +136,14 @@ const Register = () => {
         />
       </label>
       <span>
-        <button
-          disabled={isPending}
+        <Button 
+          isLoading={isPending}
           type="submit"
-          className="bg-blue-600 text-white font-bold p-2 hover:bg-blue-500 text-xl
-        disabled:bg-gray-400
-        "
+         
+        colorScheme="blue"
         >
           Create Account
-        </button>
+        </Button>
       </span>
     </form>
   );

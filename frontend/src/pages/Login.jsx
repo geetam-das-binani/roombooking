@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as apiClient from "../apiCilet";
 import toast from "react-hot-toast";
 import { loggedInUser } from "../reducers/userSlice";
+import { Button } from "@chakra-ui/react";
 const Login = () => {
   const location = useLocation();
   const {
@@ -74,15 +75,14 @@ const Login = () => {
             Create an account here
           </Link>
         </span>
-        <button
-          disabled={isPending}
+        <Button
+        colorScheme="blue"
+          isLoading={isPending}
           type="submit"
-          className="bg-blue-600 text-white font-bold p-2 hover:bg-blue-500 text-xl
-          disabled:bg-gray-400
-          "
+          
         >
           Login
-        </button>
+        </Button>
       </span>
     </form>
   );

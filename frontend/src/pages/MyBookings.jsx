@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import * as apiClient from "../apiCilet";
 const MyBookings = () => {
-  const { data } = useQuery({
-    queryKey: ["bookings"],
+  const { data,isError,error } = useQuery({
+    queryKey: ["booking"],
     queryFn: apiClient.getMyBookings,
   });
 
-  if (!data) {
+  if (data?.bookings?.length===0) {
     return (
       <h1 className="text-3xl text-gray-500 text-center">No Bookings Found</h1>
     );

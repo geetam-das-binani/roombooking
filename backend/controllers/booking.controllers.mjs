@@ -23,11 +23,7 @@ export const createBookingHandler = catchAsyncErrors(async (req, res, next) => {
     );
   }
   const capacityPerBooking = 2; // Capacity per booking
-  if (parseInt(members) > room.capacity) {
-    return next(
-      new ErrorHandler("Room is not available for too many guests.", 400)
-    );
-  }
+ 
 
   if (parseInt(members) > 2) {
     const noOfBookings = Math.ceil(parseInt(members) / capacityPerBooking);
@@ -95,12 +91,10 @@ export const getMyBookings = catchAsyncErrors(async (req, res, next) => {
   const bookings = await BookingModel.find({ user: req.user.toString() })
     .populate("user", "name email avatar")
     .populate("roomId");
-  if (!bookings.length) {
-    return next(new ErrorHandler("No bookings found", 400));
-  }
+ 
   res.status(200).json({
     success: true,
-    bookings,
+    bookings: bookings.length ? bookings : [],
   });
 });
 

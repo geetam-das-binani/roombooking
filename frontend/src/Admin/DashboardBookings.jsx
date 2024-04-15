@@ -21,7 +21,7 @@ const DashboardBookings = () => {
   });
 
   if (!data) {
-    return <div>Something Went Wrong</div>;
+    return <h2 className="text-center text-3xl m-4 font-bold text-red-500">No Bookings yet </h2>;
   }
 
   const truncate = (name) => {

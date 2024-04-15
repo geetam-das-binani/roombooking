@@ -38,9 +38,9 @@ const AllRooms = () => {
             </div>
             <div className="max-h-[200px] overflow-y-auto gap-1">
               {room?.availability?.map((elem, idx) => (
-                <div key={idx}>
+                <div className="flex flex-col justify-center" key={idx}>
                   <p className="font-bold mr-2">
-                    Date: {new Date(elem.date).toLocaleDateString()}
+                    Date: {new Date(elem.date).toLocaleDateString()} (mm/dd/yy)
                   </p>
 
                   <p className="font-bold mr-2">
