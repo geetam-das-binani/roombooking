@@ -195,3 +195,35 @@ export const updateRoomAdmin = async (formData) => {
   }
   return data;
 };
+
+export const addAvailabilityAdmin=async(data)=>{
+  const response=await fetch(`${API_BASE_URL}/api/v1/add-availability`,{
+    credentials:"include",
+    body:JSON.stringify(data),
+    headers:{
+      "Content-Type":"application/json"
+    },
+    method:"POST"
+  })
+  const res=await response.json()
+  if(!response.ok){
+    throw new Error(res.message)
+  }
+  return res
+}
+
+export const updateRoomAvailability=async(data)=>{
+  const response=await fetch(`${API_BASE_URL}/api/v1/update-availability`,{
+    credentials:"include",
+    body:JSON.stringify(data),
+    headers:{
+      "Content-Type":"application/json"
+    },
+    method:"POST"
+  })
+  const res=await response.json()
+  if(!response.ok){
+    throw new Error(res.message)
+  }
+  return res
+}

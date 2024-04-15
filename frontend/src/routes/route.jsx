@@ -18,6 +18,8 @@ import AvailableRooms from "../AdminComponents/AvailableRooms";
 import AllRooms from "../AdminComponents/AllRooms";
 import AllBookings from "../AdminComponents/AllBookings";
 import UpdateRoom from "../AdminComponents/UpdateRoom";
+import AddRoomAvailability from "../AdminComponents/AddRoomAvailability";
+import UpdateAvailability from "../AdminComponents/UpdateAvailability";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -90,6 +92,23 @@ export const router = createBrowserRouter([
         element: (
           <Protected adminOnly>
             <UpdateRoom />
+          </Protected>
+        ),
+      },
+      {
+        path: "add-availability/:id",
+        element: (
+          <Protected adminOnly>
+            <AddRoomAvailability />
+          </Protected>
+        ),
+
+      },
+      {
+        path: "update-availability/:roomId/:availabilityId",
+        element: (
+          <Protected adminOnly>
+            <UpdateAvailability />
           </Protected>
         ),
       },

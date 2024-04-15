@@ -7,7 +7,7 @@ import * as apiClient from "../apiCilet";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 const minDate = new Date().toISOString().split("T")[0];
-//  * add another date,startTime,end time so that admin can at max 2 abailability
+//  *  add chakra skeleton loader in all pages 
 const AddRoom = () => {
   const [file, setFile] = useState(null);
   const [startTime, setStartTime] = useState("");
@@ -73,6 +73,8 @@ const AddRoom = () => {
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
               required
+              min={1}
+              max={2}
               width="auto"
               htmlSize={4}
               variant="flushed"

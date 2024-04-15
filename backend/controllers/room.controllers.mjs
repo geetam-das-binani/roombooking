@@ -81,11 +81,8 @@ export const updateRoom = catchAsyncErrors(async (req, res, next) => {
   const {
     capacity,
     description,
-    date,
-    startTime,
-    endTime,
     price,
-    isBooked,
+
     roomId,
     existingImage,
   } = req.body;
@@ -105,31 +102,83 @@ export const updateRoom = catchAsyncErrors(async (req, res, next) => {
   const updatedObject = {
     capacity,
     description,
-    availability: [
-      {
-        date: new Date(date),
-        startTime,
-        endTime,
-        isBooked,
-      },
-    ],
     price,
     roomImage: cloudinaryRes || existingImage,
   };
   await RoomModel.findByIdAndUpdate(roomId, {
     $set: updatedObject,
   });
+
+  return res.status(200).json({
+    success: true,
+    message: "Room updated successfully",
+  });
+});
+
+export const addAvailability = catchAsyncErrors(async (req, res, next) => {
+  const { roomId, date, startTime, endTime } = req.body;
+
+  if (!roomId) return next(new ErrorHandler("Room id is required", 400));
+
+  const room = await RoomModel.findByIdAndUpdate(roomId, {
+    $push: {
+      availability: {
+        date: new Date(date),
+        startTime,
+        endTime,
+      },
+    },
+  });
+  if (!room) return next(new ErrorHandler("Room not found", 404));
+  return res.status(200).json({
+    success: true,
+    message: "Availability added successfully",
+  });
+});
+
+export const updateAvailability = catchAsyncErrors(async (req, res, next) => {
+  const { roomId, date, startTime, endTime, availabilityId } = req.body;
+  if (!roomId || !availabilityId) {
+    return next(
+      new ErrorHandler("roomId and availabilityId are required", 400)
+    );
+  }
+  let existingRoom = await RoomModel.findById(roomId);
+  if (!existingRoom) {
+    return next(new ErrorHandler("Room not found", 404));
+  }
+  const existingAvalability = existingRoom?.availability?.find(
+    (elem) => elem._id.toString() === availabilityId.toString()
+  );
+  const updatedAvailability = existingRoom?.availability?.map((item) =>
+    item._id.toString() === availabilityId.toString()
+      ? { ...item, startTime, endTime, date: new Date(date) }
+      : item
+  );
+
   const existingBookingsWithRoomId = await BookingModel.countDocuments({
     roomId,
+    startTime: existingAvalability?.startTime,
+    endTime: existingAvalability?.endTime,
+    date: new Date(existingAvalability?.date),
   });
+
+  existingRoom.availability = updatedAvailability;
+  await existingRoom.save();
+
   if (!existingBookingsWithRoomId)
     return res.status(200).json({
       success: true,
-      message: "Room updated successfully",
+      message: "Availability updated successfully",
     });
 
   await BookingModel.updateMany(
-    { roomId },
+    {
+      roomId,
+      startTime: existingAvalability?.startTime,
+      endTime: existingAvalability?.endTime,
+      date: new Date(existingAvalability?.date),
+    },
     {
       $set: {
         startTime,
@@ -138,9 +187,8 @@ export const updateRoom = catchAsyncErrors(async (req, res, next) => {
       },
     }
   );
-
   return res.status(200).json({
     success: true,
-    message: "Room updated successfully",
+    message: "Availability updated successfully",
   });
 });

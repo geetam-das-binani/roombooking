@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import * as apiClient from "../apiCilet";
 import { Button } from "@chakra-ui/react";
@@ -16,7 +16,9 @@ const AllRooms = () => {
       <h1 className="text-3xl font-bold mb-2">All Rooms</h1>
 
       {data?.rooms?.map((room) => (
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_3fr]  border border-slate-300 rounded-lg p-8 gap-4 mb-3">
+        <div
+        key={room._id}
+        className="grid grid-cols-1 lg:grid-cols-[1fr_3fr]  border border-slate-300 rounded-lg p-8 gap-4 mb-3">
           <div className="lg:w-full h-[250px]">
             <img
               className="w-full h-full object-cover object-center"
@@ -48,18 +50,21 @@ const AllRooms = () => {
                         {elem.startTime} - {elem.endTime}
                         {elem.isBooked ? (
                           <span
-                            className="text-white p-2 bg-red-500 
-                      rounded-md  ml-2 "
+                            className="text-red-500 p-2   ml-2 "
                           >
-                            Not Available
+                            Not Available <Button colorScheme="blue"
+                            onClick={()=>navigate(`/update-availability/${room._id}/${elem._id}`,{state:{room,elem}})}
+                            
+                            >Update</Button>
                           </span>
                         ) : (
                           <span
-                            className="text-white p-2 bg-green-500 
-                      rounded-md  ml-2
+                            className="text-green-500 p-2  ml-2
                       "
                           >
-                            Available
+                            Available <Button colorScheme="blue"
+                            onClick={()=>navigate(`/update-availability/${room._id}/${elem._id}`, {state:{room, elem}})}
+                            >Update</Button>
                           </span>
                         )}
                       </span>
@@ -68,7 +73,7 @@ const AllRooms = () => {
                 </div>
               ))}
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
               <Button
                 onClick={() =>
                   navigate(`/update`, {
@@ -80,6 +85,18 @@ const AllRooms = () => {
                 colorScheme="blue"
               >
                 Want To update ?
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate(`/add-availability/${room._id}`, {
+                    state: {
+                      room,
+                    },
+                  })
+                }
+                colorScheme="green"
+              >
+                Add Availability ?
               </Button>
             </div>
           </div>

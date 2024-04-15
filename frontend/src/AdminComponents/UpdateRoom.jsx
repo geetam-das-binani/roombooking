@@ -9,20 +9,12 @@ import { FaImage } from "react-icons/fa";
 const minDate = new Date().toISOString().split("T")[0];
 const UpdateRoom = () => {
   const location = useLocation();
-  const transformedDate = new Date(location?.state?.room?.availability[0]?.date)
-    .toISOString()
-    .split("T")[0];
+ 
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     location?.state?.room?.roomImage || ""
   );
-  const [startTime, setStartTime] = useState(
-    location?.state?.room?.availability[0]?.startTime || ""
-  );
-  const [endTime, setEndTime] = useState(
-    location?.state?.room?.availability[0]?.endTime || ""
-  );
-  const [date, setDate] = useState(transformedDate || "");
+ 
   const [price, setPrice] = useState(location?.state?.room?.price || "");
   const [capacity, setCapacity] = useState(
     location?.state?.room?.capacity || ""
@@ -50,16 +42,11 @@ const UpdateRoom = () => {
     }
     formData.append("roomImage", file);
     formData.append("existingImage", imagePreview);
-    formData.append("startTime", startTime);
-    formData.append("endTime", endTime);
-    formData.append("date", date);
+  
     formData.append("price", price);
     formData.append("capacity", capacity);
     formData.append("description", description);
-    formData.append(
-      "isBooked",
-      location?.state?.room?.availability[0].isBooked
-    );
+    
     const roomId = location?.state?.room?._id;
     formData.append("roomId", roomId);
     mutate(formData);
@@ -106,6 +93,8 @@ const UpdateRoom = () => {
               value={capacity}
               onChange={(e) => setCapacity(e.target.value)}
               required
+              min={1}
+              max={2}
               width="auto"
               htmlSize={4}
               variant="flushed"
@@ -125,43 +114,8 @@ const UpdateRoom = () => {
           </label>
         </div>
 
-        <div className="flex gap-2">
-          <label className="font-semibold">
-            StartTime:{" "}
-            <Input
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-              type="text"
-              pattern="(0[1-9]|1[0-2]):[0-5][0-9] [APap][mM]"
-              title="HH:MM AM/PM"
-            />
-          </label>
-          <label className="font-semibold">
-            EndTime:{" "}
-            <Input
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              required
-              pattern="(0[1-9]|1[0-2]):[0-5][0-9] [APap][mM]"
-              title="HH:MM AM/PM"
-              type="text"
-            />
-          </label>
-        </div>
-        <div>
-          <label className="font-semibold">
-            Date:{" "}
-            <Input
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              min={minDate}
-              required
-              width="auto"
-              type="date"
-            />
-          </label>
-        </div>
+       
+      
         {imagePreview && (
           <div>
             <label className="font-semibold">
